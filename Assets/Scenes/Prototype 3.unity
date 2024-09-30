@@ -157,10 +157,10 @@ RectTransform:
   - {fileID: 1652587962}
   m_Father: {fileID: 1143367455}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 792.4, y: 450.5}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1366892
 MonoBehaviour:
@@ -1623,7 +1623,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d520b279824c46f4299e89990d0cfd4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: 0
   playerControllerScript: {fileID: 1347974837}
   startingPoint: {fileID: 1874355817}
   lerpSpeed: 5

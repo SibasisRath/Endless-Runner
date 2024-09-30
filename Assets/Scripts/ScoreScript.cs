@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
@@ -15,6 +13,6 @@ public class ScoreScript : MonoBehaviour
 
     private void Update()
     {
-        scoreTextMeshProUGUI.text = "Score: " + gameManager.score;
+        scoreTextMeshProUGUI.text = "Score: " + Mathf.FloorToInt(gameManager.Score);
     }
 }

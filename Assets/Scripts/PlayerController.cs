@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -8,45 +6,50 @@ public class PlayerController : MonoBehaviour
     
     [SerializeField] private float _jumpForce;
     [SerializeField] private float _gravityModifier;
+    [SerializeField] private GameManager gameManager;
     
     private bool _isOnGround;
     private bool _isDoubleJumpable;
-    public bool _isDoubleSpeedable;
-    public bool gameOver = false;
-    
-    public ParticleSystem explosionParticle;
-    public ParticleSystem dirtParticle;
+    public bool IsDoubleSpeedable { get; set; }
+
+    [SerializeField] private ParticleSystem explosionParticle;
+    [SerializeField] private ParticleSystem dirtParticle;
 
     private Animator animator;
 
-    public AudioClip jumpSound;
-    public AudioClip crashSound;
+    [SerializeField] private AudioClip jumpSound;
+    [SerializeField] private AudioClip crashSound;
     private AudioSource playerAudio;
 
     [SerializeField] GameObject gameOverScreen;
-    // Start is called before the first frame update
+
+    private Vector3 originalGravity;
+
     void Start()
     {
-        gameOverScreen.SetActive(false) ;
-        gameOver = false;
+        gameOverScreen.SetActive(false);
         _rb = GetComponent<Rigidbody>();
-        Physics.gravity *= _gravityModifier;
-        
+
+        originalGravity = Physics.gravity;  // Store the original gravity
+        Physics.gravity *= _gravityModifier;  // Modify the gravity
+
         _isOnGround = true;
-        _isDoubleSpeedable = false;
-        
+        IsDoubleSpeedable = false;
         _isDoubleJumpable = false;
 
         animator = GetComponent<Animator>();
-
         playerAudio = GetComponent<AudioSource>();
+    }
 
+    void OnDestroy()
+    {
+        Physics.gravity = originalGravity;  // Reset gravity when the scene reloads
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && _isOnGround && gameOver == false)
+        if (Input.GetKeyDown(KeyCode.Space) && _isOnGround && gameManager.GameOver == false)
         {
             _rb.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
             _isOnGround = false;
@@ -65,12 +68,12 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKey(KeyCode.LeftShift))
         {
-            _isDoubleSpeedable = true;
+            IsDoubleSpeedable = true;
             animator.SetFloat("Speed_Multiplier", 2.0f);
         }
-        else if (_isDoubleSpeedable)
+        else if (IsDoubleSpeedable)
         {
-            _isDoubleSpeedable = false;
+            IsDoubleSpeedable = false;
             animator.SetFloat("Speed_Multiplier", 1.0f);
         }
 
@@ -83,10 +86,9 @@ public class PlayerController : MonoBehaviour
             _isOnGround = true;
             dirtParticle.Play();
         }
-        else if (collision.gameObject.CompareTag("Obstacle") && gameOver == false)
+        else if (collision.gameObject.CompareTag("Obstacle") && gameManager.GameOver == false)
         {
-            Debug.Log("You hit a obstacle.");
-            gameOver = true;
+            gameManager.GameOver = true;
             explosionParticle.Play();
             animator.SetBool("Death_b", true);
             animator.SetInteger("DeathType_int", 1);

@@ -1,12 +1,12 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public float score;
-    private PlayerController playerControllerScript;
+    public float Score { get; private set; }
+    public bool GameOver { get; set; }
+    [SerializeField] private PlayerController playerControllerScript;
+    public PlayerController GetPlayerController() {  return playerControllerScript; }
 
     public Transform startingPoint;
     public float lerpSpeed;
@@ -14,10 +14,10 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerControllerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        score = 0;
+        GameOver = false;
+        Score = 0;
 
-        playerControllerScript.gameOver = true;
+        GameOver = true;
         StartCoroutine(PlayIntro());
 
 
@@ -26,17 +26,16 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!playerControllerScript.gameOver && Time.timeScale == 1)
+        if (!GameOver && Time.timeScale == 1)
         {
-            if (playerControllerScript._isDoubleSpeedable)
+            if (playerControllerScript.IsDoubleSpeedable)
             {
-                score += 2;
+                Score += (2 * Time.deltaTime);
             }
             else
             {
-                score++;
+                Score += Time.deltaTime;
             }
-            Debug.Log("Score: " + score);
         }
 
     }
@@ -60,7 +59,7 @@ public class GameManager : MonoBehaviour
             yield return null;
         }
         playerControllerScript.GetComponent<Animator>().SetFloat("Speed_Multiplier", 1.0f);
-        playerControllerScript.gameOver = false;
+        GameOver = false;
 
     }
 }

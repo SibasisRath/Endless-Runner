@@ -1,31 +1,35 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ObstacleSpawner : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> _gameObject;
-    private PlayerController _playerController;
-    private float _initialTime = 2f;
-    private float _repeateGap;
+    [SerializeField] private List<GameObject> obstacleObject;
+    [SerializeField] private PlayerController playerController;
+    [SerializeField] private GameManager gameManager;
+    private float initialTime = 2f;
+    private float repeateGap;
+    [SerializeField] private float initialSpeed = 10f;
 
     private void Awake()
     {
-        _repeateGap = Random.Range(3f,5f);
+        repeateGap = Random.Range(3f,5f);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("Obstacles", _initialTime, _repeateGap);
-        _playerController = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        InvokeRepeating("Obstacles", initialTime, repeateGap);
     }
 
     void Obstacles()
     {
-        if (_playerController.gameOver == false)
+        if (gameManager.GameOver == false)
         {
-            Instantiate(_gameObject[Random.Range(0, _gameObject.Count)], transform.position, Quaternion.identity);
+            GameObject obstacleObj = Instantiate(obstacleObject[Random.Range(0, obstacleObject.Count)], transform.position, Quaternion.identity);
+            ObstacleMoveScript obstacleMoveScript = obstacleObj.GetComponent<ObstacleMoveScript>();
+            obstacleMoveScript.SetGameManager(gameManager);
+            obstacleMoveScript.SetPlayerController(playerController);
+            obstacleMoveScript.SetSpeed(initialSpeed);
         }
     }
 }
